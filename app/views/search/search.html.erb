@@ -1,9 +1,43 @@
-<h1>test</h1>
+<h1>店舗検索</h1>
 
 <%= form_with url: search_path, method: :get, local: true do |f| %>
-  <%= f.text_field :area_code, class: "area_code", placeholder: "値を入力してください" %>
+  <%= f.text_field :range, class: "range", placeholder: "値を入力してください" %>
+  <%= f.hidden_field :lat, :value => 'lat' %>
+  <%= f.hidden_field :lng, :value => 'lng' %>
 <% end %>
 
-<% @contents.each do |shop| %>
-  <%= shop.xpath('id') %>
+<h1>店舗一覧</h1>
+
+<% unless @contents.nil? %>
+  <table class="shop_list">
+    <thead>
+      <tr>
+        <th></th>
+        <th>店舗名</th>
+        <th>住所</th>
+      </tr>
+    </thead>
+    <% @contents.each do |shop| %>
+      <tbody>
+        <tr>
+          <td>
+            <%= link_to search_shop_path(shop[:id]) do %>
+              <img src="<%= shop[:logo_image] %>">
+            <% end %>
+          </td>
+          <td>
+            <%= link_to search_shop_path(shop[:id]) do %>
+              <%= shop[:name] %>
+            <% end %>
+          </td>
+          <td>
+            <%= shop[:address] %>
+          </td>
+        </tr>
+      </tbody>
+    <% end %>
+  </table>
+  <%= paginate @contents %>
 <% end %>
+
+<%= javascript_include_tag 'map/location.js' %>
